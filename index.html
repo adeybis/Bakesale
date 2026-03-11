@@ -13,7 +13,7 @@ body{
 font-family:Arial;
 background:#f3f1ea;
 margin:0;
-padding:20px;
+padding:15px;
 text-align:center;
 }
 
@@ -34,10 +34,11 @@ margin-bottom:20px;
 
 input{
 padding:10px;
-margin:5px;
+margin:6px;
 border:1px solid #ccc;
-border-radius:4px;
-width:250px;
+border-radius:5px;
+width:90%;
+max-width:280px;
 }
 
 table{
@@ -49,52 +50,64 @@ margin-top:20px;
 th{
 background:#6c7f33;
 color:white;
-padding:12px;
+padding:10px;
+font-size:16px;
 }
 
 td{
 border:1px solid #ddd;
-padding:10px;
+padding:8px;
+font-size:15px;
 }
 
 .qtyBox{
 display:flex;
 justify-content:center;
 align-items:center;
-gap:5px;
+gap:4px;
 }
 
 .qtyBtn{
-width:30px;
-height:30px;
-font-size:18px;
+width:24px;
+height:24px;
+font-size:15px;
 cursor:pointer;
+border:none;
+background:#ddd;
+border-radius:4px;
 }
 
 .qty{
-width:40px;
+width:34px;
+height:24px;
 text-align:center;
+border:1px solid #ccc;
+border-radius:4px;
 }
 
 .total{
-font-size:24px;
+font-size:22px;
 font-weight:bold;
 margin-top:20px;
 }
 
 button{
-margin:10px;
-padding:14px 25px;
+margin:8px;
+padding:12px 22px;
 background:#25D366;
 color:white;
 border:none;
 border-radius:6px;
-font-size:18px;
+font-size:16px;
 cursor:pointer;
 }
 
 .clearBtn{
 background:#888;
+}
+
+.callBtn{
+background:#3a6ea5;
 }
 
 .popup{
@@ -107,13 +120,15 @@ height:100%;
 background:rgba(0,0,0,0.5);
 justify-content:center;
 align-items:center;
+padding:15px;
 }
 
 .popupBox{
 background:white;
-padding:30px;
+padding:25px;
 border-radius:10px;
-max-width:400px;
+max-width:350px;
+width:100%;
 text-align:left;
 }
 
@@ -127,6 +142,8 @@ text-align:left;
 
 <img src="poster.jpg" class="poster">
 
+<h2>Easter Bake Sale</h2>
+
 Name<br>
 <input id="name"><br>
 
@@ -138,7 +155,7 @@ Phone Number<br>
 <tr>
 <th>Item</th>
 <th>Price</th>
-<th>Quantity</th>
+<th>Qty</th>
 </tr>
 
 <tr>
@@ -222,6 +239,12 @@ Total: $ <span id="grand">0</span>
 <button onclick="previewOrder()">Send Order</button>
 <button class="clearBtn" onclick="clearOrder()">Clear</button>
 
+<br>
+
+<a href="tel:+19517079772">
+<button class="callBtn">Call to Order</button>
+</a>
+
 </div>
 
 <div class="popup" id="popup">
@@ -248,7 +271,6 @@ let prices=[25,30,25,12,15,25]
 function changeQty(id,change){
 
 let el=document.getElementById(id)
-
 let value=parseInt(el.value)+change
 
 if(value<0)value=0
@@ -266,7 +288,6 @@ let total=0
 for(let i=1;i<=6;i++){
 
 let q=document.getElementById("q"+i).value
-
 total+=q*prices[i-1]
 
 }
@@ -298,40 +319,43 @@ alert("Please enter your name and phone number")
 return
 }
 
+if(document.getElementById("grand").innerHTML=="0"){
+alert("Please select at least one item")
+return
+}
+
 let items=[
-["Ma'amoul Dates","q1"],
-["Ma'amoul Pistachio","q2"],
-["Ma'amoul Walnuts","q3"],
-["Ghareybeh","q4"],
-["Hazelnut Ghareybeh","q5"],
-["Kibbeh","q6"]
+["Ma'amoul Dates","q1",25],
+["Ma'amoul Pistachio","q2",30],
+["Ma'amoul Walnuts","q3",25],
+["Ghareybeh","q4",12],
+["Hazelnut Ghareybeh","q5",15],
+["Kibbeh","q6",25]
 ]
 
-let text="Name: "+name+"<br>"
-text+="Phone: "+phone+"<br><br>"
+let text="<b>Name:</b> "+name+"<br>"
+text+="<b>Phone:</b> "+phone+"<br><br>"
 
-let hasItems=false
+let total=0
 
 items.forEach(function(i){
 
 let qty=parseInt(document.getElementById(i[1]).value)
 
 if(qty>0){
-text+=i[0]+" : "+qty+"<br>"
-hasItems=true
+
+let subtotal=qty*i[2]
+total+=subtotal
+
+text+=qty+" x "+i[0]+" ($"+i[2]+") = $"+subtotal+"<br>"
+
 }
 
 })
 
-if(!hasItems){
-alert("Please select at least one item")
-return
-}
-
-text+="<br><b>Total: $"+document.getElementById("grand").innerHTML+"</b>"
+text+="<br><b>Total: $"+total+"</b>"
 
 document.getElementById("summary").innerHTML=text
-
 document.getElementById("popup").style.display="flex"
 
 }
@@ -371,6 +395,8 @@ msg+=i[0]+": "+qty+"%0A"
 msg+="%0ATotal: $"+document.getElementById("grand").innerHTML
 
 window.open("https://wa.me/19517079772?text="+msg)
+
+alert("Thank you! Your order has been sent.")
 
 closePopup()
 
